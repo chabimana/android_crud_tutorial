@@ -1,6 +1,9 @@
 
 package rw.chris.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,18 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import rw.chris.model.Course;
 import rw.chris.model.Student;
 import rw.chris.service.IStudentService;
+import rw.chris.utils.CourseStudentResponse;
 import rw.chris.utils.StudentListResponse;
 
-/**
- * @Author: chabiman
- * @FileName: MainController.java
- * @Date: Jun 22, 2019
- * @Package: rw.chris.controller
- * @ProjectName: android_api_crud
- *
- */
 @RestController
 @RequestMapping("/api")
 public class MainController {
@@ -64,5 +61,68 @@ public class MainController {
 		response.setError(false);
 		response.setStudents(studentService.findAllStudent());
 		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	@PostMapping("/get_one_student")
+	public ResponseEntity<StudentListResponse> getStudentByRegNumber(@RequestParam String regNumber) {
+		StudentListResponse response = new StudentListResponse();
+		System.out.println("Hitting here");
+		Student student = studentService.findStudentByRegNumber(regNumber);
+
+		if (student != null) {
+			response.setError(false);
+			response.setMessage("Student found from the back end");
+			List<Student> students = new ArrayList<>();
+			students.add(student);
+			response.setStudents(students);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}
+		response.setError(true);
+		response.setStudents(null);
+		response.setMessage("No Student found with provided reg number: " + regNumber);
+		return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+	}
+
+	@PostMapping("/get_student_results")
+	public ResponseEntity<CourseStudentResponse> getStudentResults(@RequestParam String regNumber) {
+		System.out.println(regNumber + " search box");
+		CourseStudentResponse response = new CourseStudentResponse();
+
+		List<Course> courses = new ArrayList<>();
+		// Sample Data to be returned
+		if (regNumber.equals("PS123")) {
+			response.setError(false);
+			response.setMessage("Student Results fetched successfully");
+			response.setId((long) 12);
+
+			Student student = new Student();
+			student.setFirstName("MUNANA");
+			student.setLastName("Kelly");
+			student.setGender("FEMALE");
+			student.setRegNumber("PS123");
+			response.setStudent(student);
+
+			Course one = new Course();
+			one.setCourseCode("ICT345");
+			one.setCourseName("Artificial Intelligence");
+			one.setId((long) 1);
+			one.setMarks(34.5);
+
+			Course two = new Course();
+			two.setCourseCode("ICT350");
+			two.setCourseName("Mobile Apps Development");
+			two.setId((long) 2);
+			two.setMarks(89.5);
+
+			courses.add(one);
+			courses.add(two);
+
+			response.setCourses(courses);
+
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}
+		response.setError(true);
+		response.setMessage("Student not found");
+		return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 	}
 }

@@ -59,4 +59,17 @@ public class StudentService implements IStudentService {
 			throw ex;
 		}
 	}
+
+	/*
+	 *
+	 * @see rw.chris.service.IStudentService#findStudentByRegNumber(java.lang.String)
+	 */
+	@Override
+	public Student findStudentByRegNumber(String regNumber) {
+		try {
+			return studentRepository.findByRegNumber(regNumber);
+		} catch (Exception ex) {
+			throw ex;
+		}
+	}
 }

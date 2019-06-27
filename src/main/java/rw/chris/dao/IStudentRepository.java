@@ -30,4 +30,10 @@ public interface IStudentRepository extends JpaRepository<Student, Long> {
 	@Override
 	List<Student> findAll();
 
+	/**
+	 * @param regNumber
+	 * @return
+	 */
+	Student findByRegNumber(String regNumber);
+
 }

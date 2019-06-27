@@ -33,4 +33,10 @@ public interface IStudentService {
 	 */
 	public List<Student> findAllStudent();
 
+	/**
+	 * @param regNumber
+	 * @return
+	 */
+	public Student findStudentByRegNumber(String regNumber);
+
 }
